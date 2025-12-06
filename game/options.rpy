@@ -12,24 +12,24 @@
 ##
 ## Символы "_()", окружающие название, отмечают его как пригодное для перевода.
 
-define config.name = _("novel")
+define config.name = _("The Phantom Data")
 
 
 ## Определяет, показывать ли заголовок, данный выше, на экране главного меню.
 ## Установите на False, чтобы спрятать заголовок.
 
 define gui.show_name = True
-
+#define config.autoreload = True
 
 ## Версия игры.
 
-define config.version = "1.0"
+define config.version = "0.1"
 
 
 ## Текст, помещённый в экран "Об игре". Поместите текст между тройными
 ## скобками. Для отделения абзацев оставляйте между ними пустую строку.
 
-define gui.about = _p("""
+define gui.about = _p("""gui.aboutgui.aboutgui.aboutgui.about
 """)
 
 
@@ -37,7 +37,7 @@ define gui.about = _p("""
 ## постройке дистрибутивов. Оно должно содержать текст формата ASCII и не должно
 ## содержать пробелы, двоеточия и точки с запятой.
 
-define build.name = "novel"
+define build.name = "tpd"
 
 
 ## Звуки и музыка ##############################################################

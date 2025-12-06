@@ -582,7 +582,7 @@ style about_label_text:
 ## как они почти одинаковые, оба реализованы по правилам третьего экрана —
 ## file_slots.
 ##
-## https://www.renpy.org/doc/html/screen_special.html#save 
+## https://www.renpy.org/doc/html/screen_special.html#save
 
 screen save():
 
@@ -1618,3 +1618,18 @@ style slider_vbox:
 style slider_slider:
     variant "small"
     xsize 900
+
+screen phishing_minigame:
+    modal True
+    add "ui/phishing_email.png" at center
+
+    # Кликабельные зоны (координаты нужно подогнать под твой UI)
+    hotspot (200, 100, 300, 50) action SetVariable("phishing_found", phishing_found + 1)  # отправитель
+    hotspot (200, 160, 300, 50) action SetVariable("phishing_found", phishing_found + 1)  # опечатка
+    hotspot (200, 220, 400, 50) action SetVariable("phishing_found", phishing_found + 1)  # ссылка
+    hotspot (200, 280, 350, 50) action SetVariable("phishing_found", phishing_found + 1)  # срочность
+    hotspot (200, 340, 300, 50) action SetVariable("phishing_found", phishing_found + 1)  # нет обращения
+    # Остальные — ложные (ничего не делают)
+
+    # Таймер: через 120 секунд — завершить
+    timer 120.0 action Return()
