@@ -1,4 +1,12 @@
-﻿
+﻿image alex_normal = "images/alex_normal.png"
+image alex_notebook = "images/alex_nb.png"
+image alex_wow = "images/alex_wow.png"
+image viktor_normal = "images/viktor_normal.png"
+image viktor_sad = "images/viktor_sad.png"
+image viktor_skeptic = "images/viktor_skeptic.png"
+image max_1 = "images/max_1.png"
+image max_2 = "images/max_2.png"
+
 image bg office_soc  = "images/bgs/2.1.png"
 image bg workspace = "images/bgs/2.2.png"
 image attack_chain = "images/chapter1/chain.png"
@@ -8,14 +16,19 @@ define a = Character("Алексей", color="#c8ffc8")
 define m = Character("Максим", color="#c8c8ff")
 define inner = Character("", kind=nvl, what_italic=True)
 transform screen_center:
-    xalign 0.5
-    yalign 0.5
+    xcenter 0.5
+    ycenter 0.5
+
 
 label chapter_1:
     nvl clear
+    scene black
+    show text "Глава 1\nПЕРВЫЙ ДЕНЬ" with dissolve
+    $ renpy.pause(2.0)
+    nvl clear
     scene bg office_soc 
     with fade
-
+    play music servers volume 0.5
     show max_1 at Transform(xalign=1.0,ypos=0.04, zoom=1.15) with moveinright
     show alex_normal at Transform(left, ypos=0.04, zoom=1.2) with moveinleft 
 
@@ -30,7 +43,8 @@ label chapter_1:
     m "Три монитора — твои глаза. SIEM — твоё чтиво на ближайшее время. Чат — твои уши. И да, кофе вон там, в углу."
     scene bg workspace 
     with fade
-
+    stop music  fadeout 1.0
+    play music keyboard
     $ examined_items = 0
 
     $ seen_siem = False
@@ -92,96 +106,84 @@ label chapter_1:
         m "Давай остановимся на одной вкладке подробнее. Это - твой первый \"клиент\". Смотри — SIEM ругается на множественные неудачные входы."
         hide siem_alert
         menu:
-            "СРОЧНО БЛОКИРОВАТЬ IP!":
+            "Cрочно блокировать IP!":
                 $ impulsive_score += 2
                 $ analytical_score -= 1
-                $ renpy.pause(1.0)
-                #show chat_blocked_message at center with dissolve
-                $ renpy.pause(2.0)
                 m "Так мы сами создаем проблемы. Ты только что отключил обновления безопасности. Следующий раз — проверь, кто за этим IP."
-                #hide chat_blocked_message with dissolve
 
-            "ПРОВЕРИТЬ ИСТОРИЮ АКТИВНОСТИ IP":
+            "Проверить историю активности IP":
                 $ analytical_score += 2
                 $ practical_score += 1
-                $ renpy.pause(1.0)
-                #show ip_history at center with dissolve
-                $ renpy.pause(2.0)
                 m "Верный подход. Это не атака — это автоматическая проверка статуса. Ложное срабатывание."
                 m "Теперь ты знаешь, как отличить шум от сигнала."
-                #hide ip_history with dissolve
 
-            "ЭТО МЕЛОЧЬ, ИГНОРИРОВАТЬ":
+            "Это мелочь, игнорировать":
                 $ impulsive_score += 1
                 $ practical_score -= 2
-                $ renpy.pause(1.0)
-                #show siem_overload at center with dissolve
-                $ renpy.pause(2.0)
                 m "Из мелочей складываются большие проблемы. Ты перегрузил систему. Теперь мы не увидим настоящую атаку."
                 m "Ты не виноват. Но ты должен понять: в SOC мелочи — это фундамент."
-                #hide siem_overload with dissolve
 
         hide siem_login_alert
 
     scene black
 
     nvl clear
-    inner "Пока что силы у разработчика закончились. Демоверсия тоже."
-    #     #play sound "audio/email_ping.wav"
-    #     show phishing_email at center with dissolve
+    play sound notify
 
-    #     m "Следующий кейс — сотрудник прислал подозрительное письмо."
-    #     m "Найди три признака фишинга. У тебя 2 минуты."
+    m "Так, а у нас уже появился следующий кейс — сотрудник прислал подозрительное письмо."
+    m "Найди три признака фишинга. У тебя ровно 60 секунд! Время пошло."
 
-    #     $ phishing_found = 0
+    $ phishing_found = 0
+    $ phishing_attempts = 0
 
-    #     call screen phishing_minigame
+    call screen phishing_minigame
 
-    #     if phishing_found >= 3:
-    #         $ analytical_score += 3
-    #         m "Отлично! Все признаки нашёл. Так и нужно — не доверять ни одному письму без проверки."
-    #     elif phishing_found >= 1:
-    #         $ practical_score += 1
-    #         m "Хорошо, но можно было глубже копнуть. Фишинг — это не про ссылки. Это про психологию."
-    #     else:
-    #         $ impulsive_score += 2
-    #         $ analytical_score -= 2
-    #         m "В реальной жизни ты бы сейчас заразил всю сеть."
+    if phishing_found >= 2:
+        play sound success volume 0.5
+        $ analytical_score += 3
+        m "Отлично! Все признаки нашёл. Так и нужно — не доверять ни одному письму без проверки."
+    elif phishing_found >= 1:
+        play sound success volume 0.5
+        $ practical_score += 1
+        m "Хорошо, но можно было глубже копнуть. Фишинг — это не про ссылки. Это про психологию."
+    else:
+        play sound bad volume 0.33
+        $ impulsive_score += 2
+        $ analytical_score -= 2
+        m "Ты много где напутал..."
+        m "В реальной жизни, поведись бы получатель на это, он потерял бы все свои деньги, или еще хуже - заразил корпоративную сеть. Мы и нужны для того, чтобы не было никаких \"если\". "
 
-    #     hide phishing_email with dissolve
+    stop music fadeout 5
 
-    #     #play sound "audio/day_end_bell.wav"
-    #     #stop music fadeout 2.0
-    #     show maxim neutral at right
-    #     show alexey thinking at left
+    scene bg office_soc with fade
+    show max_1 at Transform(xalign=1.0,ypos=0.04, zoom=1.15) with moveinright
+    show alex_normal at Transform(left, ypos=0.04, zoom=1.2) with moveinleft 
 
-    #     m "Ну что, первый день прошёл."
+    m "Ну что, первый день прошёл."
 
-    #     if analytical_score > 4:
-    #         m "Вижу, ты любишь всё проверять основательно. Это ценно в расследованиях."
-    #     elif practical_score > 4:
-    #         m "Работаешь по инструкции, без лишних рисков. Надёжно."
-    #     elif impulsive_score > 4:
-    #         m "Действуешь быстро, но иногда слишком импульсивно. Учись тормозить."
-    #     else:
-    #         m "Неплохо для первого раза. Главное — не останавливайся."
+    if analytical_score > 4:
+        m "Вижу, ты любишь всё проверять основательно. Это ценно в расследованиях."
+    elif practical_score > 4:
+        m "Работаешь по инструкции, без лишних рисков. Надёжно."
+    elif impulsive_score > 4:
+        m "Действуешь быстро, но иногда слишком импульсивно. Учись тормозить."
+    else:
+        m "Неплохо для первого раза. Главное — не останавливайся."
 
-    #     m "Завтра, наверняка, будет интереснее — хотя даже этого я тебе обещать не могу."
+    m "Завтра, наверняка, будет интереснее — хотя даже этого я тебе обещать не могу."
 
-    #     show maxim hand_paper
-    #     $ renpy.pause(1.0)
+    $ renpy.pause(1.0)
 
-    #     "[Внутренний голос Алексея] \"The Phantom Data\"... Да уж, подвальчик — далеко не \"Тинькофф\". Но... если тут майнили крипту на серверах 1С, значит, тут есть что-то настоящее."
+    scene black with fade
 
-    #     $ renpy.pause(1.5)
-    #     "[Внутренний голос Алексея] \"Заходи, если не боишься\"..."
+    a "\"The Phantom Data\"... Да уж, подвальчик — далеко не \"Тинькофф\". Но... если тут майнили крипту на серверах 1С, значит, тут есть что-то настоящее."
+    a "\"Заходи, если не боишься\"..."
+    a "...Ну, пойдём."
 
-    #     $ renpy.pause(1.0)
-    #     "[Внутренний голос Алексея] ...Ну, пойдём."
+    play sound door
+    $ renpy.pause(1.0)
 
-    #     scene office_soc with fade
-    #     #play sound "audio/door_close.wav"
-    #     $ renpy.pause(2.0)
+    $ renpy.save("chapter1_complete", "Глава 1 завершена")
 
-    # # Переход к главе 2
-    # jump chapter_2
+# Переход к главе 2
+jump chapter_2

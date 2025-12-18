@@ -7,15 +7,25 @@ define inner = Character("", kind=nvl, what_italic=True)
 image bg university_hall = "images/bgs/1.1.png"
 image bg prologue_door = "images/bgs/1.2.png"
 
+image alex_normal = "images/alex_normal.png"
+image alex_notebook = "images/alex_nb.png"
+image alex_wow = "images/alex_wow.png"
+image viktor_normal = "images/viktor_normal.png"
+image viktor_sad = "images/viktor_sad.png"
+image viktor_skeptic = "images/viktor_skeptic.png"
+image max_1 = "images/max_1.png"
+image max_2 = "images/max_2.png"
+
+
 # audio/prologue_theme.mp3
 
 label prologue:
-
+    play music steps
+    show text "Новелла\n«The Phantom Data»" with dissolve
+    $renpy.pause(1.0)
     scene black
-    inner "Новелла\n«The Phantom Data»"
-    with dissolve
-    inner "Вы — Алексей, студент направления «Информационная безопасность».\nВаша практика начинается не в офисе мечты...\n...а в подвале, где постоянно что-то происходит."
-    with dissolve
+    show text "Вы — Алексей, студент направления «Информационная безопасность».\nВаша практика начинается не в офисе мечты...\n...а в подвале, где постоянно что-то происходит." with dissolve
+    $renpy.pause(1.0)
     scene bg university_hall with fade
     play music "audio/prologue_theme.mp3" fadein 2.0
     nvl clear
@@ -23,12 +33,15 @@ label prologue:
 
     nvl clear
     window show
+    stop music fadeout 0.5
+    play music talks
 
     inner "Вот Серёга — тому в \"Типкофф\" повезло. Престижно, деньги... А я..."
 
+    nvl clear
     scene bg prologue_door with fade
     show viktor_normal at Transform(xalign=1.0, yalign=1.0, zoom=1.05) with moveinright
-    v "Алексей! А у меня для тебя... особый путь. Помнишь свой \"энергоаудит\" серверной?"
+    v "Алексей! А у меня для тебя... особый путь. Помнишь свой \"тест на безопасность \" серверной?"
     show alex_normal at Transform(left, ypos=0.04, zoom=1.2) with moveinleft 
     a "Тот, из-за которого у нас на неделю отменили стипендию?"
     v "Тот самый. Но есть способ всё исправить. Компания «The Phantom Data» готова взять тебя на практику."
@@ -61,17 +74,20 @@ label prologue:
 
     nvl clear
     inner "А Серёга-то сейчас, наверное, уже кофе в новой кружке с логотипом \"Типькофф\" пьёт..."
-
+    nvl clear
     window show
 
     v "Вот и славно. Держи адрес. Удачи."
+    play sound door
 
     scene bg university_hall with fade
 
     "Алексей берёт бумажку. Сцена плавно переходит к двери с табличкой:"
-    
-    inner "«The Phantom Data. Заходи, если не боишься»."
-
+    scene black with dissolve
+    show text "«The Phantom Data. Заходи, если не боишься»."
+    stop music fadeout 0.5
     $ renpy.pause(2.0)
+
+    $ renpy.save("prologue_complete", "Пролог завершен")
 
     jump chapter_1

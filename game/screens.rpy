@@ -1619,17 +1619,188 @@ style slider_slider:
     variant "small"
     xsize 900
 
-screen phishing_minigame:
+screen phishing_minigame():
     modal True
-    add "ui/phishing_email.png" at center
+    zorder 200
+    
+    # Проверяем правильную переменную
+    if phishing_attempts >= 4 or phishing_found == 2:
+        timer 0.01 action Return()
+    
+    add "images/ui/screen.png":
+        xcenter 0.5
+        ycenter 0.5
+    
+    # Кнопка 1
+    button:
+        xpos 1080 ypos 350
+        xsize 500 ysize 50
+        background Solid("#ff00ff30")
+        hover_background Solid("#ff00ff60")
+        action [
+            With(flash), 
+            SetVariable("phishing_found", phishing_found + 1),
+            SetVariable("phishing_attempts", phishing_attempts + 1)
+        ]
+    
+    # Кнопка 2
+    button:
+        xpos 1080 ypos 440
+        xsize 500 ysize 50
+        background Solid("#ff00ff30")
+        hover_background Solid("#ff00ff60")
+        action [
+            With(flash),
+            SetVariable("phishing_attempts", phishing_attempts + 1)  # Только попытки
+        ]    
+    
+    # Кнопка 3
+    button:
+        xpos 1080 ypos 520
+        xsize 500 ysize 50
+        background Solid("#ff00ff30")
+        hover_background Solid("#ff00ff60")
+        action [
+            With(flash),
+            SetVariable("phishing_attempts", phishing_attempts + 1)
+        ]    
+    
+    # Кнопка 4
+    button:
+        xpos 1080 ypos 610
+        xsize 500 ysize 50
+        background Solid("#ff00ff30")
+        hover_background Solid("#ff00ff60")
+        action [
+            With(flash),
+            SetVariable("phishing_attempts", phishing_attempts + 1)
+        ]    
+    
+    # Кнопка 5
+    button:
+        xpos 1080 ypos 700
+        xsize 500 ysize 50
+        background Solid("#ff00ff30")
+        hover_background Solid("#ff00ff60")
+        action [
+            With(flash), 
+            SetVariable("phishing_found", phishing_found + 1),
+            SetVariable("phishing_attempts", phishing_attempts + 1)
+        ]
+    
+    timer 60.0 action Return()
 
-    # Кликабельные зоны (координаты нужно подогнать под твой UI)
-    hotspot (200, 100, 300, 50) action SetVariable("phishing_found", phishing_found + 1)  # отправитель
-    hotspot (200, 160, 300, 50) action SetVariable("phishing_found", phishing_found + 1)  # опечатка
-    hotspot (200, 220, 400, 50) action SetVariable("phishing_found", phishing_found + 1)  # ссылка
-    hotspot (200, 280, 350, 50) action SetVariable("phishing_found", phishing_found + 1)  # срочность
-    hotspot (200, 340, 300, 50) action SetVariable("phishing_found", phishing_found + 1)  # нет обращения
-    # Остальные — ложные (ничего не делают)
+init python:
+    flash= Fade(0.1, 0, 0.1, color="#000000")
 
-    # Таймер: через 120 секунд — завершить
-    timer 120.0 action Return()
+
+screen chain_minigame():
+    modal True
+    zorder 300
+
+    # Фон — просто чёрный прямоугольник (как доска)
+    add Solid("#000000")  # можно заменить на "#111" для менее агрессивного чёрного
+
+    # Заголовок
+    text "Соберите цепочку компрометации" xalign 0.5 ypos 50 size 36 color "#ffffff"
+
+    # Область собранной цепочки (доска)
+    frame:
+        xalign 0.5
+        ypos 150
+        xsize 900
+        ysize 400
+        background Solid("#222222")  # тёмно-серый фон "доски"
+
+        vbox:
+            spacing 20
+            xalign 0.5
+            yalign 0.5
+
+            hbox:
+                spacing 10
+                xalign 0.5
+
+                # Слот 1
+                frame:
+                    xsize 180
+                    ysize 120
+                    background Solid("#ffffff10")  # почти прозрачный белый
+                    if cards_collected >= 1:
+                        text "Финансовый стресс" xalign 0.5 yalign 0.5 color "#ffffff" size 20
+
+                text "→" yalign 0.5 color "#cccccc"
+
+
+
+                # Слот 2
+                frame:
+                    xsize 180
+                    ysize 120
+                    background Solid("#ffffff10")
+                    if cards_collected >= 2:
+                        text "Фишинговая ссылка" xalign 0.5 yalign 0.5 color "#ffffff" size 20
+
+                text "→" yalign 0.5 color "#cccccc"
+
+                # Слот 3
+                frame:
+                    xsize 180
+                    ysize 120
+                    background Solid("#ffffff10")
+                    if cards_collected >= 3:
+                        text "Установка вредоноса" xalign 0.5 yalign 0.5 color "#ffffff" size 20
+
+                text "→" yalign 0.5 color "#cccccc"
+
+                # Слот 4
+                frame:
+                    xsize 180
+                    ysize 120
+                    background Solid("#ffffff10")
+                    if cards_collected >= 4:
+                        text "Кража денег" xalign 0.5 yalign 0.5 color "#ffffff" size 20
+
+    # Кнопки выбора
+    vbox:
+        xalign 0.1
+        yalign 0.7
+        spacing 10
+
+        text "Выберите правильный порядок:" color "#ffffff" size 24
+
+        for card in ["Кража денег", "Фишинговая ссылка", "Установка вредоноса", "Финансовый стресс"]:
+            textbutton card:
+                xsize 250
+                background Solid("#444444")
+                hover_background Solid("#666666")
+                text_color "#ffffff"
+                action [
+                    Play("sound", "audio/click.wav"),
+                    If(card == "Финансовый стресс" and cards_collected == 0,
+                        SetVariable("cards_collected", 1)),
+                    If(card == "Фишинговая ссылка" and cards_collected == 1,
+                        SetVariable("cards_collected", 2)),
+                    If(card == "Установка вредоноса" and cards_collected == 2,
+                        SetVariable("cards_collected", 3)),
+                    If(card == "Кража денег" and cards_collected == 3,
+                        [
+                            SetVariable("cards_collected", 4),
+                            SetVariable("chain_complete", True),
+                            Play("sound", "audio/success.wav")
+                        ])
+                ]
+
+    # Кнопка завершения
+    if chain_complete:
+        textbutton "Цепочка собрана! Продолжить":
+            xalign 0.5
+            yalign 0.9
+            xsize 300
+            background Solid("#00aa00")
+            hover_background Solid("#00cc00")
+            text_color "#ffffff"
+            action Return()
+
+    # Подсказка
+    text "Подсказка: Что было причиной, а что следствием?" xalign 0.5 yalign 0.95 color "#aaaaaa"
