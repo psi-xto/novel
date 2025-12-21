@@ -1,9 +1,7 @@
-﻿# === Персонажи ===
-define a = Character("Алексей", color="#c8ffc8")
+﻿define a = Character("Алексей", color="#c8ffc8")
 define v = Character("Виктор Сергеевич", color="#c8c8ff")
 define inner = Character("", kind=nvl, what_italic=True)
 
-# === Фоны ===
 image bg university_hall = "images/bgs/1.1.png"
 image bg prologue_door = "images/bgs/1.2.png"
 
@@ -17,11 +15,10 @@ image max_1 = "images/max_1.png"
 image max_2 = "images/max_2.png"
 
 
-# audio/prologue_theme.mp3
 
 label prologue:
     play music steps
-    show text "Новелла\n«The Phantom Data»" with dissolve
+    inner "Новелла\n«The Phantom Data»" with dissolve
     $renpy.pause(1.0)
     scene black
     show text "Вы — Алексей, студент направления «Информационная безопасность».\nВаша практика начинается не в офисе мечты...\n...а в подвале, где постоянно что-то происходит." with dissolve
@@ -29,14 +26,12 @@ label prologue:
     scene bg university_hall with fade
     play music "audio/prologue_theme.mp3" fadein 2.0
     nvl clear
-    inner "ПРОЛОГ: Распределение на практику"
+    inner "ПРОЛОГ: {b}Распределение на практику{/b}"
 
     nvl clear
     window show
     stop music fadeout 0.5
     play music talks
-
-    inner "Вот Серёга — тому в \"Типкофф\" повезло. Престижно, деньги... А я..."
 
     nvl clear
     scene bg prologue_door with fade
@@ -53,7 +48,7 @@ label prologue:
     a "Звучит... сомнительно. А нельзя меня куда-нибудь в нормальное место?"
     hide viktor_normal with dissolve
     show viktor_skeptic at Transform(xalign=1.0, yalign=1.0, zoom=1.05) with dissolve
-    v "В \"Тинькофф\" — нет. А в \"The Phantom Data\" — да. И если их руководитель даст тебе хорошую характеристику... стипендию вернут. Досрочно."
+    v "В \"Типкофф\" — нет. А в \"The Phantom Data\" — да. И если их руководитель даст тебе хорошую характеристику... стипендию вернут. Досрочно."
 
     a "Ну ладно... А что я там вообще делать-то буду?"
 
@@ -73,7 +68,7 @@ label prologue:
             a "Майнинг в 1С... Это хоть забавно. Любопытно, как они это обнаружили."
 
     nvl clear
-    inner "А Серёга-то сейчас, наверное, уже кофе в новой кружке с логотипом \"Типькофф\" пьёт..."
+    "А Серёга-то сейчас, наверное, уже кофе в новой кружке с логотипом \"Типькофф\" пьёт..."
     nvl clear
     window show
 

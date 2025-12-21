@@ -7,8 +7,7 @@ image viktor_skeptic = "images/viktor_skeptic.png"
 image max_1 = "images/max_1.png"
 image max_2 = "images/max_2.png"
 
-image bg office_soc  = "images/bgs/2.1.png"
-image bg workspace = "images/bgs/2.2.png"
+
 image attack_chain = "images/chapter1/chain.png"
 image chat_message = "images/chapter1/chat.png"
 image siem_alert = "images/chapter1/alert.png"
@@ -23,17 +22,14 @@ transform screen_center:
 label chapter_1:
     nvl clear
     scene black
-    show text "Глава 1\nПЕРВЫЙ ДЕНЬ" with dissolve
+    show text "Глава 1\n{b}ПЕРВЫЙ ДЕНЬ{/b}" with dissolve
     $ renpy.pause(2.0)
     nvl clear
-    scene bg office_soc 
+    scene office_soc 
     with fade
     play music servers volume 0.5
     show max_1 at Transform(xalign=1.0,ypos=0.04, zoom=1.15) with moveinright
     show alex_normal at Transform(left, ypos=0.04, zoom=1.2) with moveinleft 
-
-    #play music "audio/first_shift.mp3" fadein 2.0
-    #play sound "audio/server_hum.wav" loop
 
     m "Ну что, пришла свежая кровь? Добро пожаловать в SOC. Вижу, Виктор Сергеевич тебя \"по рекомендации\" направил."
 
@@ -41,10 +37,11 @@ label chapter_1:
 
     m "Расслабься. У нас тут половина команды с такими же \"рекомендациями\" начинала. Это твоё рабочее место."
     m "Три монитора — твои глаза. SIEM — твоё чтиво на ближайшее время. Чат — твои уши. И да, кофе вон там, в углу."
-    scene bg workspace 
+    scene workspace 
     with fade
     stop music  fadeout 1.0
-    play music keyboard
+    play music siem volume 0.5 fadein 2.0
+
     $ examined_items = 0
 
     $ seen_siem = False
@@ -99,7 +96,6 @@ label chapter_1:
 
         jump part2
     label part2:
-        #play sound "audio/siem_alert.wav"
         show siem_alert at screen_center with dissolve
         $ renpy.pause(1)
 
@@ -155,7 +151,7 @@ label chapter_1:
 
     stop music fadeout 5
 
-    scene bg office_soc with fade
+    scene office_soc with fade
     show max_1 at Transform(xalign=1.0,ypos=0.04, zoom=1.15) with moveinright
     show alex_normal at Transform(left, ypos=0.04, zoom=1.2) with moveinleft 
 
@@ -185,5 +181,4 @@ label chapter_1:
 
     $ renpy.save("chapter1_complete", "Глава 1 завершена")
 
-# Переход к главе 2
 jump chapter_2

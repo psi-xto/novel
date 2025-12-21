@@ -358,6 +358,12 @@ screen main_menu():
 
     add gui.main_menu_background
 
+    on "show" action [
+        Stop("music", fadeout=1.0),
+        Play("music", "audio/main_menu.mp3", loop=True, fadein=5.0)
+    ]
+    
+    on "replace" action Stop("music", fadeout=1.0)
     ## Эта пустая рамка затеняет главное меню.
     frame:
         style "main_menu_frame"
@@ -376,7 +382,6 @@ screen main_menu():
 
             text "[config.version]":
                 style "main_menu_version"
-
 
 style main_menu_frame is empty
 style main_menu_vbox is vbox
@@ -1697,110 +1702,205 @@ init python:
 screen chain_minigame():
     modal True
     zorder 300
-
-    # Фон — просто чёрный прямоугольник (как доска)
-    add Solid("#000000")  # можно заменить на "#111" для менее агрессивного чёрного
-
-    # Заголовок
+    
+    default selected_cards = []
+    default correct_order = ["Финансовый стресс", "Фишинговая ссылка", "Установка вредоноса", "Кража денег"]
+    
+    add Solid("#0a0a1a")
+    
     text "Соберите цепочку компрометации" xalign 0.5 ypos 50 size 36 color "#ffffff"
-
-    # Область собранной цепочки (доска)
+    
+    # Область цепочки
     frame:
         xalign 0.5
         ypos 150
-        xsize 900
-        ysize 400
-        background Solid("#222222")  # тёмно-серый фон "доски"
-
-        vbox:
-            spacing 20
+        xsize 910
+        ysize 200
+        background Solid("#1a1a2e")
+        
+        hbox:
             xalign 0.5
             yalign 0.5
-
-            hbox:
-                spacing 10
-                xalign 0.5
-
-                # Слот 1
+            spacing 20
+            
+            for i in range(4):
                 frame:
                     xsize 180
-                    ysize 120
-                    background Solid("#ffffff10")  # почти прозрачный белый
-                    if cards_collected >= 1:
-                        text "Финансовый стресс" xalign 0.5 yalign 0.5 color "#ffffff" size 20
-
-                text "→" yalign 0.5 color "#cccccc"
-
-
-
-                # Слот 2
-                frame:
-                    xsize 180
-                    ysize 120
-                    background Solid("#ffffff10")
-                    if cards_collected >= 2:
-                        text "Фишинговая ссылка" xalign 0.5 yalign 0.5 color "#ffffff" size 20
-
-                text "→" yalign 0.5 color "#cccccc"
-
-                # Слот 3
-                frame:
-                    xsize 180
-                    ysize 120
-                    background Solid("#ffffff10")
-                    if cards_collected >= 3:
-                        text "Установка вредоноса" xalign 0.5 yalign 0.5 color "#ffffff" size 20
-
-                text "→" yalign 0.5 color "#cccccc"
-
-                # Слот 4
-                frame:
-                    xsize 180
-                    ysize 120
-                    background Solid("#ffffff10")
-                    if cards_collected >= 4:
-                        text "Кража денег" xalign 0.5 yalign 0.5 color "#ffffff" size 20
-
-    # Кнопки выбора
+                    ysize 100
+                    background Solid("#ffffff15")
+                    if i < len(selected_cards):
+                        text selected_cards[i] xalign 0.5 yalign 0.5 color "#ffffff" size 16 text_align 0.5
+                    else:
+                        text "?" xalign 0.5 yalign 0.5 color "#888888" size 24
+                
+                if i < 3:
+                    text "→" yalign 0.5 color "#4cc9f0" size 28
+    
+    # Кнопки выбора - ЛЕВАЯ ПАНЕЛЬ
     vbox:
         xalign 0.1
         yalign 0.7
-        spacing 10
-
-        text "Выберите правильный порядок:" color "#ffffff" size 24
-
-        for card in ["Кража денег", "Фишинговая ссылка", "Установка вредоноса", "Финансовый стресс"]:
+        spacing 20
+        
+        text "Выберите карточку:" color "#ffffff" size 24
+        
+        # Все возможные карточки
+        $ all_cards = ["Кража денег", "Фишинговая ссылка", "Финансовый стресс", "Установка вредоноса"]
+        $ available_cards = [card for card in all_cards if card not in selected_cards]
+        
+        for card in available_cards:
             textbutton card:
                 xsize 250
-                background Solid("#444444")
-                hover_background Solid("#666666")
+                ysize 50
+                background Solid("#4361ee")
+                hover_background Solid("#4895ef")
+                text_color "#ffffff"
+                text_size 18
+                action [
+                    Play("sound", "audio/click.wav"),
+                    SetScreenVariable("selected_cards", selected_cards + [card])
+                ]
+    
+    vbox:
+        xalign 0.9
+        yalign 0.7
+        spacing 15
+        
+        text "Управление:" color "#ffffff" size 24
+        
+        if len(selected_cards) > 0:
+            textbutton "↶ Отменить последнюю":
+                xsize 220
+                background Solid("#f72585")
+                hover_background Solid("#ff4da6")
                 text_color "#ffffff"
                 action [
                     Play("sound", "audio/click.wav"),
-                    If(card == "Финансовый стресс" and cards_collected == 0,
-                        SetVariable("cards_collected", 1)),
-                    If(card == "Фишинговая ссылка" and cards_collected == 1,
-                        SetVariable("cards_collected", 2)),
-                    If(card == "Установка вредоноса" and cards_collected == 2,
-                        SetVariable("cards_collected", 3)),
-                    If(card == "Кража денег" and cards_collected == 3,
-                        [
-                            SetVariable("cards_collected", 4),
-                            SetVariable("chain_complete", True),
-                            Play("sound", "audio/success.wav")
-                        ])
+                    SetScreenVariable("selected_cards", selected_cards[:-1])
                 ]
-
-    # Кнопка завершения
-    if chain_complete:
-        textbutton "Цепочка собрана! Продолжить":
-            xalign 0.5
-            yalign 0.9
-            xsize 300
-            background Solid("#00aa00")
-            hover_background Solid("#00cc00")
+        
+        textbutton "⟲ Сбросить":
+            xsize 220
+            background Solid("#7209b7")
+            hover_background Solid("#9d4edd")
             text_color "#ffffff"
-            action Return()
+            action [
+                Play("sound", "audio/click.wav"),
+                SetScreenVariable("selected_cards", [])
+            ]
+        
+    
+    if len(selected_cards) == 4:
+        frame:
+            xalign 0.5
+            ypos 650
+            xsize 600
+            ysize 120
+            background Solid("#222222aa")
+            
+            vbox:
+                xalign 0.5
+                yalign 0.5
+                spacing 10
+                
+                if selected_cards == correct_order:
+                    text "✓ Правильно! Цепочка собрана верно!" color "#00ff88" size 24 xalign 0.5
+                    text "Финансовый стресс → Фишинг → Вредонос → Кража" color "#aaffaa" size 16 xalign 0.5
+                    
+                    textbutton "Продолжить":
+                        xalign 0.5
+                        xsize 250
+                        background Solid("#00aa00")
+                        hover_background Solid("#00cc00")
+                        text_color "#ffffff"
+                        action [
+                            Play("sound", "audio/success.wav"),
+                            SetVariable("chain_complete", True),
+                            Return()
+                        ]
+                
+                else:
+                    text "✗ Неверный порядок" color"#ff5555" size 24 xalign 0.5
+                    text "Попробуйте еще раз" color"#ffaaaa" size 18 xalign 0.5
+    
+    text "Что было ПРИЧИНОЙ, а что СЛЕДСТВИЕМ?" xalign 0.5 ypos 850 color "#4cc9f0" size 20
+init python:
+    
+    class AddToSet(Action):
+        def __init__(self, variable, value):
+            self.variable = variable
+            self.value = value
+        
+        def __call__(self):
+            if self.value not in self.variable:
+                self.variable.append(self.value)
+            renpy.restart_interaction()
+        
+        def get_sensitive(self):
+            return True  
+    
+    class RemoveFromSet(Action):
+        def __init__(self, variable, value):
+            self.variable = variable
+            self.value = value
+        
+        def __call__(self):
+            if self.value in self.variable:
+                self.variable.remove(self.value)
+            renpy.restart_interaction()
+        
+        def get_sensitive(self):
+            return True 
 
-    # Подсказка
-    text "Подсказка: Что было причиной, а что следствием?" xalign 0.5 yalign 0.95 color "#aaaaaa"
+
+screen stats_screen():
+    zorder 1000
+    modal True
+    
+    add Solid("#1a1a2e")
+    
+    vbox:
+        xalign 0.5
+        yalign 0.4
+        spacing 30
+        
+        text "[analyst_type]" size 32 color "#4cc9f0" xalign 0.5
+        text "[description]" size 20 color "#ffffff" xalign 0.5
+        
+        null height 30
+        
+        vbox:
+            spacing 15
+            xalign 0.5
+            
+            text "АНАЛИТИКА: [analytical_score]" size 20 color "#4361ee" xalign 0.5
+            bar:
+                value analytical_score
+                range 10
+                xsize 300
+                left_bar "#4361ee"
+                right_bar "#333333"
+            
+            text "ПРАКТИЧНОСТЬ: [practical_score]" size 20 color "#4cc9f0" xalign 0.5
+            bar:
+                value practical_score
+                range 10
+                xsize 300
+                left_bar "#4cc9f0"
+                right_bar "#333333"
+            
+            text "ИМПУЛЬСИВНОСТЬ: [impulsive_score]" size 20 color "#f72585" xalign 0.5
+            bar:
+                value impulsive_score
+                range 10
+                xsize 300
+                left_bar "#f72585"
+                right_bar "#333333"
+    
+    textbutton "Продолжить":
+        xalign 0.5
+        yalign 0.9
+        background "#333333"
+        hover_background "#555555"
+        text_color "#ffffff"
+        action Return()

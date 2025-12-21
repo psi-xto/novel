@@ -1,25 +1,19 @@
-## ГЛАВА 2: ЦИФРОВОЙ ДЕТЕКТИВ
 
-# Определение персонажей
-image bg office_soc  = "images/bgs/2.1.png"
-
+image office_soc  = "images/bgs/2.1.png"
+image workspace = "images/bgs/2.2.png"
 define a = Character("Алексей", color="#c8ffc8")
 define m = Character("Максим", color="#c8c8ff")
 define d = Character("Дмитрий", color="#ffc8c8")
 transform screen_center:
     xalign 0.5
     yalign 0.5
-# Изображения
-image bg phantom_office = "images/bgs/office_phantom.png"
 image downloads = "images/ui/downloads.png"
 image virustotal = 'images/ui/virustotal.png'
 image configxml = 'images/ui/config.png'
 image smslog = 'images/ui/smslog.png'
 
-# Основная метка главы 2
 label chapter_2:
     
-    # Инициализация переменных
     $ chapter2_choice1 = 0
     $ chapter2_choice2 = 0
     $ chapter2_choice3 = 0
@@ -31,18 +25,17 @@ label chapter_2:
     scene black
     with fade
     
-    show text "Глава 2\nЦИФРОВОЙ ДЕТЕКТИВ" with dissolve
+    show text "Глава 2\n{b}ЦИФРОВОЙ ДЕТЕКТИВ{/b}" with dissolve
     $ renpy.pause(2.0)
     hide text with dissolve
         
-    ## СЦЕНА 2.1: ПРОСЬБА О ПОМОЩИ
-    scene bg office_soc 
+    scene office_soc 
     with fade
     
     play sound door
     play music ch2fon volume 0.1
     
-    "Дверь открывается с лёгким скрипом. В офис заходит мужчина лет сорока, нервно оглядываясь."
+    "Дверь открывается с лёгким скрипом. В офис заходит мужчина лет тридцати, нервно оглядываясь."
     
     show dmitriy at Transform(left, ypos=0.04, zoom=0.68) with dissolve
     
@@ -83,9 +76,8 @@ label chapter_2:
             m "Алексей..."
             "Дмитрий выглядит обиженным. Он меньше делится подробностями."
     
-    ## СЦЕНА 2.2: УЛИКА №1 — ПОДОЗРИТЕЛЬНЫЙ APK
     
-    scene bg workspace
+    scene workspace
     with fade
     
     "Вы подключаете телефон к рабочей станции. Начинается анализ дампа - снимка всех данных с телефона."
@@ -96,16 +88,6 @@ label chapter_2:
     play music keyboard fadein 5 fadeout 5
     "`Авито Фото.apk` — размер 4.7 МБ, дата установки: вчера, 23:47."
     hide downloads
-    # Флешбэк №1
-    # play music flashback_music fadein 1.0
-    # show flashback_garage with flash
-    # flashback "Гараж. Поздний вечер. Дмитрий возится с двигателем."
-    # play sound phone_notification
-    # flashback "На телефон приходит сообщение: «Скачайте Авито Фото — там все фото видно. Без этого приложения фотографии запчастей не открываются»."
-    # flashback "Уставший, он кликает на ссылку..."
-    # hide flashback_garage with dissolve
-    # stop music fadeout 1.0
-    # play music tense_music fadein 1.0
     
     menu:
         "Проверить файл в VirusTotal":
@@ -135,7 +117,6 @@ label chapter_2:
             d "От продавца на Авито... он сказал, без этого не увидишь фото запчастей..."
             a "Классическая социальная инженерия. Использовали ваш интерес к сделке."
     
-    ## СЦЕНА 2.3: УЛИКА №2 — КОНФИГ ТРОЯНА
     
     a "Иду глубже. Папка данных приложения..."
     show configxml at screen_center with dissolve
@@ -143,16 +124,6 @@ label chapter_2:
     "`/data/data/com.dtbekgyrd.ramroe/prefs.xml`"
     a "Интересно, в содержимом прямо прописан параметр \"Перехвата\", и заданы номера телефонов..."
     
-    # # Флешбэк №2
-    # play music flashback_music fadein 1.0
-    # show flashback_stress with flash
-    # flashback "Банковское приложение. Дмитрий переводит 7000 рублей другу."
-    # flashback "Сообщение от друга: «Верни, срочно нужны на лекарства»."
-    # flashback "Дмитрий возвращает деньги. Его баланс: 1243 рубля."
-    # flashback "Уведомление на Авито: «Обмен с доплатой?»"
-    # hide flashback_stress with dissolve
-    # stop music fadeout 1.0
-    # play music tense_music fadein 1.0
     stop music
     hide configxml with dissolve
     m "Ну что, сложилось какое-нибудь представление?"
@@ -178,9 +149,7 @@ label chapter_2:
             
             a "Нужно составить отчёт по шаблону DFIR: как произошла компроментация, какое время было затрачено, какие рекомендации. Все-таки это инцидент."
             m "Правильно. Документация — половина работы."
-    
-    ## СЦЕНА 2.4: УЛИКА №3 — ПСИХОЛОГИЧЕСКИЙ ПОРТРЕТ
-    
+        
     show smslog at screen_center with dissolve
 
     m "Анализ таких данных, как SMS или фотографии, может много сказать о личности. И дать понятие, почему такое могло произойти. Все-таки нам нужно выявить факторы риска."
@@ -192,16 +161,6 @@ label chapter_2:
     "• «Мама, пришли 5000 до зарплаты»"
     play sound sms
     "• «Что, и не пил вчера совсем даже один-то??? Исправился уже?»"
-    
-    # # Флешбэк №3
-    # play music flashback_music fadein 1.0
-    # show flashback_phone with flash
-    # flashback "23:47. Дмитрий засыпает на диване."
-    # flashback "Телофон вибрирует. На экране: «Разрешить приложению доступ к SMS и звонкам?»"
-    # flashback "Полусонный палец тянется к кнопке «Разрешить»..."
-    # hide flashback_phone with dissolve
-    # stop music fadeout 1.0
-    # play music tense_music fadein 1.0
     
     hide smslog with dissolve
 
@@ -231,13 +190,10 @@ label chapter_2:
             a "Нужно рекомендовать обучение по безопасному поведению."
             a "И двухфакторную аутентификацию через приложение, а не SMS."
             m "Практичный подход. Защита на будущее."
-    
-    ## СЦЕНА 2.5: СБОР ЦЕПОЧКИ КОМПРОМЕТАЦИИ
-    
+        
     m "Теперь собери всю цепочку. Что было сначала, что потом."
     m "Поймёшь последовательность — поймёшь атаку."
     play music ch2fon volume 0.33
-    # Вызов мини-игры
     call screen chain_minigame
     
     if chain_complete:
@@ -250,10 +206,8 @@ label chapter_2:
         play sound bad volume 0.33
         m "Ты спутал причину и следствие."
         m "Вернись и перечитай логи. Что было мотивом, а что инструментом?"
-        
-    ## СЦЕНА 2.6: ЭМОЦИОНАЛЬНЫЙ ФИНАЛ ГЛАВЫ
-    
-    scene bg office_soc
+            
+    scene office_soc
     with fade
     
     show max_1 at Transform(ypos=0.04, zoom=1.15) with dissolve
@@ -286,10 +240,7 @@ label chapter_2:
     
     scene black with fade
     
-    # Автосохранение
     $ renpy.save("chapter2_complete", "Глава 2 завершена")
         
-    # Переход к главе 3
-    # jump chapter_3
+    jump chapter_3
     
-    return
